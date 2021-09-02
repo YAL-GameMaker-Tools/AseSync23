@@ -1,0 +1,4 @@
+-lib haxe-files
+--neko asesync.n
+#-x
+AseSync.hx
