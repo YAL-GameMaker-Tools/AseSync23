@@ -1,4 +1,6 @@
 -lib haxe-files
---neko asesync.n
+-lib format
+-lib yyjson
+--neko bin/AseSync.n
 #-x
 AseSync.hx

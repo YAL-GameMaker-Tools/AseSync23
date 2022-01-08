@@ -72,6 +72,7 @@ class AseSync {
 				case "--once": syncNow = true; syncOnce = true; 1;
 				case "--folder": prefix = args[i + 1]; 2;
 				case "--aseprite": asepritePath = args[i + 1]; 2;
+				case "--consent": AseConfig.current.consent = true; AseConfig.save(); 1;
 				default: 0;
 			}
 			if (del > 0) {

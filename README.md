@@ -41,6 +41,8 @@ Supported parameters:
 	This is good if you've received a bunch of new sprites and would rather not open-save each of them.
 *	`--once`: Goes over all of the sprites in directory and then quits.  
 	(without watching for changes)
+*	`--consent`: Forces backup/source control consent without waiting for input.  
+	(so you can run this tool completely automated, but still, use source control)
 *	`--aseprite`: Overrides Aseprite path for a session.
 
 ## Compiling
