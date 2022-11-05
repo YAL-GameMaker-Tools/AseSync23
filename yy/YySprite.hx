@@ -2,10 +2,14 @@ package yy;
 import haxe.DynamicAccess;
 
 /**
- * ...
+ * Generated using
+ * https://yal.cc/r/19/json2typedef/
  * @author YellowAfterlife
  */
 typedef YySprite = {
+	resourceType:String,
+	resourceVersion:String,
+	name:String,
 	bboxMode:Int,
 	collisionKind:Int,
 	type:Int,
@@ -21,6 +25,7 @@ typedef YySprite = {
 	HTile:Bool,
 	VTile:Bool,
 	For3D:Bool,
+	DynamicTexturePage:Bool,
 	width:Int,
 	height:Int,
 	textureGroupId:{
@@ -31,7 +36,11 @@ typedef YySprite = {
 	gridX:Int,
 	gridY:Int,
 	frames:Array<{
-		compositeImage:{
+		resourceType:String,
+		resourceVersion:String,
+		name:String,
+		// the following were eliminated in GM2022:
+		?compositeImage:{
 			FrameId:{
 				name:String,
 				path:String
@@ -42,7 +51,7 @@ typedef YySprite = {
 			tags:Array<Any>,
 			resourceType:String
 		},
-		images:Array<{
+		?images:Array<{
 			FrameId:{
 				name:String,
 				path:String
@@ -56,20 +65,15 @@ typedef YySprite = {
 			tags:Array<Any>,
 			resourceType:String
 		}>,
-		parent:{
+		?parent:{
 			name:String,
 			path:String
 		},
-		resourceVersion:String,
-		name:String,
-		tags:Array<Any>,
-		resourceType:String
 	}>,
 	sequence:{
-		spriteId:{
-			name:String,
-			path:String
-		},
+		resourceType:String,
+		resourceVersion:String,
+		name:String,
 		timeUnits:Int,
 		playback:Int,
 		playbackSpeed:Float,
@@ -88,6 +92,8 @@ typedef YySprite = {
 			resourceType:String
 		},
 		tracks:Array<{
+			resourceType:String,
+			resourceVersion:String,
 			name:String,
 			spriteId:Any,
 			keyframes:{
@@ -119,11 +125,8 @@ typedef YySprite = {
 			interpolation:Int,
 			tracks:Array<Any>,
 			events:Array<Any>,
-			modifiers:Array<Any>,
 			isCreationTrack:Bool,
-			resourceVersion:String,
-			tags:Array<Any>,
-			resourceType:String
+			modifiers:Array<Any>
 		}>,
 		visibleRange:Any,
 		lockOrigin:Bool,
@@ -138,34 +141,21 @@ typedef YySprite = {
 		xorigin:Int,
 		yorigin:Int,
 		eventToFunction:{},
-		eventStubScript:Any,
-		parent:{
-			name:String,
-			path:String
-		},
-		resourceVersion:String,
-		name:String,
-		tags:Array<Any>,
-		resourceType:String
+		eventStubScript:Any
 	},
 	layers:Array<{
+		resourceType:String,
+		resourceVersion:String,
+		name:String,
 		visible:Bool,
 		isLocked:Bool,
 		blendMode:Int,
 		opacity:Float,
-		displayName:String,
-		resourceVersion:String,
-		name:String,
-		tags:Array<Any>,
-		resourceType:String
+		displayName:String
 	}>,
 	nineSlice:Any,
 	parent:{
 		name:String,
 		path:String
-	},
-	resourceVersion:String,
-	name:String,
-	tags:Array<Any>,
-	resourceType:String
+	}
 };

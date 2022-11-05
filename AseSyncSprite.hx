@@ -174,17 +174,21 @@ class AseSyncSprite {
 			if (sf == null) {
 				sf = YyJson.parse(baseSpriteFrameText);
 				var guid = createGUID();
-				sf.parent = { name: name, path: yyRel };
-				var img = sf.images[0];
-				img.FrameId.name = guid;
-				img.FrameId.path = yyRel;
-				img.LayerId.name = spr.layers[0].name;
-				img.LayerId.path = yyRel;
-				sf.parent.name = name;
-				sf.parent.path = yyRel;
+				if (sf.parent != null) {
+					sf.parent = { name: name, path: yyRel };
+				}
+				if (sf.images != null) {
+					var img = sf.images[0];
+					img.FrameId.name = guid;
+					img.FrameId.path = yyRel;
+					img.LayerId.name = spr.layers[0].name;
+					img.LayerId.path = yyRel;
+				}
 				sf.name = guid;
-				sf.compositeImage.FrameId.name = guid;
-				sf.compositeImage.FrameId.path = yyRel;
+				if (sf.compositeImage != null) {
+					sf.compositeImage.FrameId.name = guid;
+					sf.compositeImage.FrameId.path = yyRel;
+				}
 				spr.frames.push(sf);
 				//
 				kf = YyJson.parse(baseSpriteKeyFrameText);
@@ -201,7 +205,8 @@ class AseSyncSprite {
 				save = true;
 			}
 			var src = '$tmp/$i.png';
-			var dst = yyDir + "/" + sf.compositeImage.FrameId.name + ".png";
+			var dstName = sf.compositeImage != null ? sf.compositeImage.FrameId.name : sf.name;
+			var dst = yyDir + "/" + dstName + ".png";
 			if (!FileTools.compare(src, dst)) {
 				Sys.println('Copying $src to $dst...');
 				File.copy(src, dst);

@@ -209,7 +209,7 @@ class AseSync {
 			ex = Executor.create();
 			fw = new PollingFileWatcher(ex, 500);
 			fw.subscribe(function(e) {
-				trace(e);
+				//trace(e);
 				switch (e) {
 					case FILE_MODIFIED(file, _, _), FILE_CREATED(file):
 						var path = file.path.toString();
