@@ -221,8 +221,12 @@ class AseSyncSprite {
 		// remove extra frames
 		var i = spr.frames.length;
 		while (--i >= keys.length) {
-			var guid = spr.frames[i].compositeImage.FrameId.name;
-			FileSystem.deleteFile('$yyDir/$guid.png');
+			var sf = spr.frames[i];
+			var guid = sf.compositeImage != null ? sf.compositeImage.FrameId.name : sf.name;
+			var path = '$yyDir/$guid.png';
+			if (FileSystem.exists(path)) try {
+				FileSystem.deleteFile(path);
+			} catch (_:Dynamic) {};
 			spr.frames.pop();
 			keyframes.pop();
 			save = true;
