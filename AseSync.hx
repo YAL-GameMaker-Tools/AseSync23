@@ -55,6 +55,7 @@ class AseSync {
 	}
 	
 	public static function main_1() {
+		Sys.println("AceSync v" + tools.Macros.buildDate());
 		initMeta();
 		
 		executableDir = Path.directory(Sys.programPath());
@@ -76,7 +77,7 @@ class AseSync {
 				default: 0;
 			}
 			if (del > 0) {
-				args.splice(i, 2);
+				args.splice(i, del);
 			} else i++;
 		}
 		
