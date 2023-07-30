@@ -35,6 +35,13 @@ typedef AseData = {
 			w:Int,
 			h:Int
 		},
+		?frameTags:Array<{
+			name:String,
+			from:Int,
+			to:Int,
+			direction:String,
+			color:String
+		}>,
 		scale:String
 	}
 }

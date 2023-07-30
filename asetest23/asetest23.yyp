@@ -7,6 +7,8 @@
     {"id":{"name":"obj_test","path":"objects/obj_test/obj_test.yy",},"order":0,},
     {"id":{"name":"spr_test","path":"sprites/spr_test/spr_test.yy",},"order":1,},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},"order":0,},
+    {"id":{"name":"shark_chomp","path":"sprites/shark_chomp/shark_chomp.yy",},"order":9999,},
+    {"id":{"name":"shark_chomp_green","path":"sprites/shark_chomp_green/shark_chomp_green.yy",},"order":9999,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},
@@ -57,6 +59,6 @@
   ],
   "IncludedFiles": [],
   "MetaData": {
-    "IDEVersion": "2022.9.1.51",
+    "IDEVersion": "2022.0.0.19",
   },
 }

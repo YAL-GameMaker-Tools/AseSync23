@@ -31,9 +31,7 @@ class AseSyncSprite {
 		}
 		return result;
 	}
-	public static function sync(asePath:String) {
-		var name = (new Path(asePath)).file;
-		Sys.println('Syncing $name ($asePath)...');
+	static function sync_1(asePath:String, tmp:String, name:String, aseData:AseData, keys:Array<String>, tmpOffset:Int) {
 		var yyDir = '$projectDir/sprites/$name';
 		var yyPath = '$yyDir/$name.yy';
 		var yyRel = 'sprites/$name/$name.yy';
@@ -95,23 +93,6 @@ class AseSyncSprite {
 			});
 		}
 		
-		var tmp = 'tmp/$name';
-		if (!FileSystem.exists(tmp)) FileSystem.createDirectory(tmp);
-		Sys.command(asepritePath, [
-			"-b",
-			"--data", '$tmp/data.json',
-			asePath,
-			"--save-as", '$tmp/0.png',
-		]);
-		
-		var aseData:AseData = {
-			var _storeKeys = YyJsonParser.storeKeys;
-			YyJsonParser.storeKeys = true;
-			var _aseData = YyJsonParser.parse(File.getContent('$tmp/data.json'));
-			YyJsonParser.storeKeys = _storeKeys;
-			_aseData;
-		};
-		var keys:Array<String> = cast aseData.frames["__keys__"];
 		var aseSize = aseData.frames[keys[0]].sourceSize;
 		var aseWidth = aseSize.w;
 		var aseHeight = aseSize.h;
@@ -204,7 +185,8 @@ class AseSyncSprite {
 				kf.Length = dur;
 				save = true;
 			}
-			var src = '$tmp/$i.png';
+			var tmpInd = tmpOffset + i;
+			var src = '$tmp/$tmpInd.png';
 			var dstName = sf.compositeImage != null ? sf.compositeImage.FrameId.name : sf.name;
 			var dst = yyDir + "/" + dstName + ".png";
 			if (!FileTools.compare(src, dst)) {
@@ -234,6 +216,37 @@ class AseSyncSprite {
 		
 		if (save) {
 			File.saveContent(yyPath, YyJson.stringify(spr));
+		}
+	}
+	public static function sync(asePath:String) {
+		var name = (new Path(asePath)).file;
+		Sys.println('Syncing $name ($asePath)...');
+		
+		var tmp = 'tmp/$name';
+		if (!FileSystem.exists(tmp)) FileSystem.createDirectory(tmp);
+		Sys.command(asepritePath, [
+			"-b",
+			"--list-tags",
+			"--data", '$tmp/data.json',
+			asePath,
+			"--save-as", '$tmp/0.png',
+		]);
+		
+		var aseData:AseData = {
+			var _storeKeys = YyJsonParser.storeKeys;
+			YyJsonParser.storeKeys = true;
+			var _aseData = YyJsonParser.parse(File.getContent('$tmp/data.json'));
+			YyJsonParser.storeKeys = _storeKeys;
+			_aseData;
+		};
+		var keys:Array<String> = cast aseData.frames["__keys__"];
+		
+		var tags = aseData.meta.frameTags ?? [];
+		if (tags.length == 0) {
+			sync_1(asePath, tmp, name, aseData, keys, 0);
+		} else for (tag in tags) {
+			var tname = tag.name == "" ? name : name + "_" + tag.name;
+			sync_1(asePath, tmp, tname, aseData, keys.slice(tag.from, tag.to + 1), tag.from);
 		}
 	}
 	
