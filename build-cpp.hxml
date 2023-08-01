@@ -1,0 +1,6 @@
+-lib haxe-files
+-lib format
+-lib yyjson
+--cpp bin/cpp
+#-x
+AseSync.hx

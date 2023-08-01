@@ -103,9 +103,12 @@ class AseSyncSprite {
 		if (spr.width != aseWidth || spr.height != aseHeight) {
 			spr.width = aseWidth;
 			spr.height = aseHeight;
-			if (spr.origin < 9) {
-				spr.sequence.xorigin = ((spr.origin % 3) * aseWidth) >> 1;
-				spr.sequence.yorigin = (Std.int(spr.origin / 3) * aseHeight) >> 1;
+			var spr_orig:Int = spr.origin;
+			if (spr_orig < 9) {
+				var xorig:Int = ((spr_orig % 3) * aseWidth) >> 1;
+				var yorig:Int = (Std.int(spr_orig / 3) * aseHeight) >> 1;
+				spr.sequence.xorigin = xorig;
+				spr.sequence.yorigin = yorig;
 			}
 			save = true;
 		}

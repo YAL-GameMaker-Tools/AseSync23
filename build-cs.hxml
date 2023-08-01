@@ -1,0 +1,3 @@
+-lib yyjson
+--cpp bin/cs
+AseSync.hx
