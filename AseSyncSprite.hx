@@ -1,5 +1,6 @@
 package ;
 import AseSync.*;
+import haxe.CallStack;
 import haxe.io.Path;
 import yy.*;
 import haxe.macro.Expr.Var;
@@ -7,6 +8,7 @@ import sys.FileSystem;
 import sys.io.File;
 import tools.FileTools;
 import tools.MathTools;
+import tools.TagNester;
 
 /**
  * ...
@@ -193,8 +195,13 @@ class AseSyncSprite {
 			var dstName = sf.compositeImage != null ? sf.compositeImage.FrameId.name : sf.name;
 			var dst = yyDir + "/" + dstName + ".png";
 			if (!FileTools.compare(src, dst)) {
-				Sys.println('Copying $src to $dst...');
-				File.copy(src, dst);
+				Sys.print('Copying $src to $dst...');
+				try {
+					File.copy(src, dst);
+					Sys.println(" OK!");
+				} catch (x:Any) {
+					Sys.println(" Error! " + x);
+				}
 			}
 			time += dur;
 		}
@@ -218,7 +225,16 @@ class AseSyncSprite {
 		}
 		
 		if (save) {
-			File.saveContent(yyPath, YyJson.stringify(spr));
+			Sys.print('Saving ${Path.withoutDirectory(yyPath)}... ');
+			try {
+				File.saveContent(yyPath, YyJson.stringify(spr));
+				Sys.println('OK');
+			} catch (x:Dynamic) {
+				Sys.println('error! ' + x);
+				Sys.println(CallStack.toString(CallStack.exceptionStack(true)));
+			}
+		} else {
+			Sys.println("(no YY changes)");
 		}
 	}
 	public static function sync(asePath:String) {
@@ -245,10 +261,13 @@ class AseSyncSprite {
 		var keys:Array<String> = cast aseData.frames["__keys__"];
 		
 		var tags = aseData.meta.frameTags ?? [];
+		tags = TagNester.proc(tags);
 		if (tags.length == 0) {
+			Sys.println('Sprite "$name"');
 			sync_1(asePath, tmp, name, aseData, keys, 0);
 		} else for (tag in tags) {
-			var tname = tag.name == "" ? name : name + "_" + tag.name;
+			Sys.println('Sprite "$name", tag "${tag.name}"');
+			var tname = TagNester.concat(name, tag.name);
 			sync_1(asePath, tmp, tname, aseData, keys.slice(tag.from, tag.to + 1), tag.from);
 		}
 	}

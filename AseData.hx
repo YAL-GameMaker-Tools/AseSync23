@@ -27,21 +27,25 @@ typedef AseData = {
 		},
 		duration:Int
 	}>,
-	meta:{
-		app:String,
-		version:String,
-		format:String,
-		size:{
-			w:Int,
-			h:Int
-		},
-		?frameTags:Array<{
-			name:String,
-			from:Int,
-			to:Int,
-			direction:String,
-			color:String
-		}>,
-		scale:String
-	}
-}
+	meta:AseDataMeta,
+};
+typedef AseDataMeta = {
+	app:String,
+	version:String,
+	format:String,
+	size:{
+		w:Int,
+		h:Int
+	},
+	?frameTags:Array<AseDataTag>,
+	scale:String
+};
+typedef AseDataTag = {
+	name:String,
+	from:Int,
+	to:Int,
+	direction:String,
+	color:String,
+	// non-standard
+	?parent:String,
+};
