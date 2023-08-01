@@ -1,12 +1,18 @@
 import haxe.CallStack;
 import tools.MySysTools;
 import haxe.io.Path;
-import hx.concurrent.executor.Executor;
-import hx.files.watcher.PollingFileWatcher;
 import sys.FileSystem;
 import sys.io.File;
 import sys.thread.Mutex;
 import yy.*;
+#if cs
+import cs.system.io.FileSystemWatcher;
+import cs.system.io.NotifyFilters;
+import cs.system.io.FileSystemEventArgs;
+#else
+import hx.concurrent.executor.Executor;
+import hx.files.watcher.PollingFileWatcher;
+#end
 
 class AseSync {
 	public static var executableDir:String;
@@ -53,9 +59,27 @@ class AseSync {
 		];
 		YyJsonMeta.fieldOrder["GMConfig"] = ["name", "children"];
 	}
+	static var checkMtx:Mutex = new Mutex();
+	static var checkNext:Array<String> = [];
+	#if cs
+	static function fwcListener(sender:Any, e:FileSystemEventArgs) {
+		var path = Path.normalize(e.FullPath);
+		checkMtx.acquire();
+		checkNext.push(path);
+		checkMtx.release();
+	}
+	#end
 	
 	public static function main_1() {
-		Sys.println("AceSync v" + tools.Macros.buildDate());
+		var kind = "?";
+		#if cpp
+		kind = "C++";
+		#elseif cs
+		kind = "C#";
+		#elseif neko
+		kind = "NekoVM";
+		#end
+		Sys.println("AceSync v" + tools.Macros.buildDate() + ' $kind');
 		initMeta();
 		
 		executableDir = Path.directory(Sys.programPath());
@@ -165,11 +189,11 @@ class AseSync {
 				if (!FileSystem.exists(yyPath)) continue;
 				try {
 					var text = File.getContent(yyPath);
-					var spr:YySprite = YyJsonParser.parse(text);
-					if (spr.frames.length == 0) continue;
+					var yySpr:YySprite = YyJsonParser.parse(text);
+					if (yySpr.frames.length == 0) continue;
 					baseSpritePath = yyPath;
 					baseSpriteText = text;
-					baseSpriteData = spr;
+					baseSpriteData = yySpr;
 					Sys.println('Picked $spr.');
 					break;
 				} catch (x) continue;
@@ -201,9 +225,24 @@ class AseSync {
 		}
 		
 		Sys.println("Watching the sprites directory for changes...");
+		#if cs
+		var fwc = new FileSystemWatcher(watchDir);
+		fwc.Filter = "*.aseprite";
+		fwc.IncludeSubdirectories = true;
+		fwc.EnableRaisingEvents = true;
+		
+		var filters = NotifyFilters.CreationTime;
+		for (filter in [
+			NotifyFilters.LastWrite,
+			NotifyFilters.FileName,
+		]) filters = cs.Syntax.code("{0} | {1}", filters, filter);
+		fwc.NotifyFilter = filters;
+		
+		fwc.add_Created(fwcListener);
+		fwc.add_Changed(fwcListener);
+		fwc.add_Renamed(fwcListener);
+		#else
 		var _trace = haxe.Log.trace;
-		var checkMtx:Mutex = new Mutex();
-		var checkNext:Array<String> = [];
 		var fw:PollingFileWatcher, ex:Executor;
 		try {
 			haxe.Log.trace = function(v, ?i) {}
@@ -211,6 +250,7 @@ class AseSync {
 			fw = new PollingFileWatcher(ex, 500);
 			fw.subscribe(function(e) {
 				//trace(e);
+				//Sys.println(e);
 				switch (e) {
 					case FILE_MODIFIED(file, _, _), FILE_CREATED(file):
 						var path = file.path.toString();
@@ -228,6 +268,7 @@ class AseSync {
 			return;
 		}
 		haxe.Log.trace = _trace;
+		#end
 		Sys.println("You can close the window when you're done.");
 		
 		var checkPaths:Array<String> = [];
@@ -245,8 +286,12 @@ class AseSync {
 			checkPaths.resize(0);
 			flushYyp();
 		}
+		#if cs
+		fwc.Dispose();
+		#else
 		fw.stop();
 		ex.stop();
+		#end
 	}
 	public static function main() {
 		if (false) {
