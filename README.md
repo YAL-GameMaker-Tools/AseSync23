@@ -5,6 +5,8 @@ This tool automatically updates sprites in your GameMaker Studio 2.3+ project wh
 In some way it can be seen as successor to [lazyload](https://lazyeye.itch.io/lazyload),
 except without Topher's tasteful UI or much other polish.
 
+**Update:** There's [a frontend](https://sahaun.itch.io/asesync) for the tool now that you can use.
+
 ## Requirements
 
 *	GameMaker Studio 2.3 or higher (tested with 2.3.4)
@@ -43,7 +45,7 @@ Supported parameters:
 	(without watching for changes)
 *	`--consent`: Forces backup/source control consent without waiting for input.  
 	(so you can run this tool completely automated, but still, use source control)
-*	`--aseprite`: Overrides Aseprite path for a session.
+*	`--aseprite <path>`: Overrides Aseprite path for a session.
 
 ## Compiling
 
