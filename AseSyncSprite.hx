@@ -48,7 +48,10 @@ class AseSyncSprite {
 			spr.sequence.tracks[0].keyframes.Keyframes = [];
 			spr.name = name;
 			
-			if (projectData == null) projectData = YyJson.parse(File.getContent(projectPath));
+			if (projectData == null) {
+				projectData = YyJson.parse(File.getContent(projectPath));
+				syncBaseSprite();
+			}
 			
 			var aseNorm = Path.normalize(asePath);
 			if (StringTools.startsWith(aseNorm, watchDir + "/")) { // create YYP folder chain

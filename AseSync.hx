@@ -30,6 +30,14 @@ class AseSync {
 	public static var baseSpriteFrameText:String;
 	public static var baseSpriteKeyFrameText:String;
 	public static var baseSpritePath:String;
+	public static function syncBaseSprite(?text:String, ?yySpr:YySprite) {
+		var sprText = text ?? File.getContent(baseSpritePath);
+		var baseSpriteData:YySprite = yySpr ?? YyJson.parse(sprText);
+		baseSpriteFrameText = YyJson.stringify(baseSpriteData.frames[0]);
+		trace(yySpr.name, yySpr);
+		baseSpriteKeyFrameText = YyJson.stringify(baseSpriteData.sequence.tracks[0].keyframes.Keyframes[0]);
+		baseSpriteText = sprText;
+	}
 	
 	public static inline var maxOrder = 9999;
 	
@@ -177,11 +185,9 @@ class AseSync {
 		
 		//trace("hi!", watchDir);
 		
-		var baseSpritePath = '$projectDir/sprites/$baseSpriteName/$baseSpriteName.yy';
-		var baseSpriteData:YySprite = null;
+		baseSpritePath = '$projectDir/sprites/$baseSpriteName/$baseSpriteName.yy';
 		if (FileSystem.exists(baseSpritePath)) {
-			baseSpriteText = File.getContent(baseSpritePath);
-			baseSpriteData = YyJson.parse(baseSpriteText);
+			syncBaseSprite();
 		} else {
 			Sys.println("No template sprite is defined, looking for first sprite...");
 			for (spr in FileSystem.readDirectory('$projectDir/sprites')) {
@@ -192,20 +198,19 @@ class AseSync {
 					var yySpr:YySprite = YyJsonParser.parse(text);
 					if (yySpr.frames.length == 0) continue;
 					baseSpritePath = yyPath;
-					baseSpriteText = text;
-					baseSpriteData = yySpr;
+					syncBaseSprite(text, yySpr);
 					Sys.println('Picked $spr.');
 					break;
-				} catch (x) continue;
+				} catch (x) {
+					Sys.println('Error checking sprite $spr: ' + x);
+					continue;
+				}
 			}
 			if (baseSpriteText == null) {
 				Sys.println("Couldn't find a single sprite! Please add one and re-run");
 				return;
 			}
 		}
-		
-		baseSpriteFrameText = YyJson.stringify(baseSpriteData.frames[0]);
-		baseSpriteKeyFrameText = YyJson.stringify(baseSpriteData.sequence.tracks[0].keyframes.Keyframes[0]);
 		
 		if (syncNow) {
 			Sys.println("Running force-sync...");
