@@ -7,6 +7,8 @@ except without Topher's tasteful UI or much other polish.
 
 **Update:** There's [a frontend](https://sahaun.itch.io/asesync) for the tool now that you can use.
 
+**Note:** for recent GameMaker versions, you might want to use [GM Link](https://pr0te.itch.io/gm-link), which does more than this tool.
+
 ## Requirements
 
 *	GameMaker Studio 2.3 or higher (tested with 2.3.4)
